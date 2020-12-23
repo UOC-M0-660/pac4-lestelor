@@ -42,7 +42,7 @@ class TwitchApiService(private val httpClient: HttpClient) {
     }
 
     /// Gets Streams on Twitch
-    @Throws(UnauthorizedException::class)
+   /* @Throws(UnauthorizedException::class)
     suspend fun getStreams(cursor: String? = null): StreamsResponse? {
         try {
             val response = httpClient
@@ -64,7 +64,7 @@ class TwitchApiService(private val httpClient: HttpClient) {
                 else -> null
             }
         }
-    }
+    }*/
 
     /// Gets Current Authorized User on Twitch
     @Throws(UnauthorizedException::class)
