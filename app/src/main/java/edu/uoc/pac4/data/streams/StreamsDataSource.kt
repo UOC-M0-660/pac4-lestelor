@@ -6,7 +6,6 @@ import android.widget.Toast
 import androidx.lifecycle.lifecycleScope
 import edu.uoc.pac4.R
 import edu.uoc.pac4.data.SessionManager
-import edu.uoc.pac4.data.TwitchApiService
 import edu.uoc.pac4.data.network.Endpoints
 import edu.uoc.pac4.data.network.Network
 import edu.uoc.pac4.data.network.UnauthorizedException

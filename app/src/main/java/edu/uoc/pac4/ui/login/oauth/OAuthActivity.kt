@@ -10,20 +10,25 @@ import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.Toast
+import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import edu.uoc.pac4.ui.LaunchActivity
 import edu.uoc.pac4.R
 import edu.uoc.pac4.data.SessionManager
-import edu.uoc.pac4.data.TwitchApiService
 import edu.uoc.pac4.data.network.Endpoints
 import edu.uoc.pac4.data.network.Network
 import edu.uoc.pac4.data.oauth.OAuthConstants
+import edu.uoc.pac4.data.oauth.OAuthTokensResponse
+import edu.uoc.pac4.ui.streams.StreamsViewModel
 import kotlinx.android.synthetic.main.activity_oauth.*
 import kotlinx.coroutines.launch
+import org.koin.android.viewmodel.ext.android.viewModel
 
 class OAuthActivity : AppCompatActivity() {
 
     private val TAG = "StreamsActivity"
+    // Connect the Activity with the ViewModel using Koin
+    private val viewModel: OAuthViewModel by viewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -92,6 +97,28 @@ class OAuthActivity : AppCompatActivity() {
         // Show Loading Indicator
         progressBar.visibility = View.VISIBLE
 
+        viewModel.getTokens(authorizationCode)
+        viewModel.tokensResponse.observe(this, Observer<OAuthTokensResponse?> {
+            if (it!=null) {
+                progressBar.visibility = View.GONE
+                // Restart app to navigate to StreamsActivity
+                startActivity(Intent(this@OAuthActivity, LaunchActivity::class.java))
+                finish()
+            } else {
+                Toast.makeText(
+                        this@OAuthActivity,
+                        getString(R.string.error_oauth),
+                        Toast.LENGTH_LONG
+                ).show()
+                // Restart Activity
+                finish()
+                startActivity(Intent(this@OAuthActivity, OAuthActivity::class.java))
+            }
+        })
+
+
+
+        /*// Before rearranging ......
         // Create Twitch Service
         val service = TwitchApiService(Network.createHttpClient(this))
         // Launch new thread attached to this Activity.
@@ -130,6 +157,6 @@ class OAuthActivity : AppCompatActivity() {
             // Restart app to navigate to StreamsActivity
             startActivity(Intent(this@OAuthActivity, LaunchActivity::class.java))
             finish()
-        }
+        }*/
     }
 }

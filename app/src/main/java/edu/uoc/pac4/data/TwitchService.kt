@@ -16,6 +16,8 @@ import io.ktor.client.request.*
  * Created by alex on 24/10/2020.
  */
 
+// Not necessary anymore since we use VMMV
+/*
 @Deprecated("Refactor with Repository + DataSources")
 class TwitchApiService(private val httpClient: HttpClient) {
     private val TAG = "TwitchApiService"
@@ -42,7 +44,7 @@ class TwitchApiService(private val httpClient: HttpClient) {
     }
 
     /// Gets Streams on Twitch
-   /* @Throws(UnauthorizedException::class)
+   @Throws(UnauthorizedException::class)
     suspend fun getStreams(cursor: String? = null): StreamsResponse? {
         try {
             val response = httpClient
@@ -64,7 +66,7 @@ class TwitchApiService(private val httpClient: HttpClient) {
                 else -> null
             }
         }
-    }*/
+    }
 
     /// Gets Current Authorized User on Twitch
     @Throws(UnauthorizedException::class)
@@ -115,4 +117,4 @@ class TwitchApiService(private val httpClient: HttpClient) {
             }
         }
     }
-}
+}*/

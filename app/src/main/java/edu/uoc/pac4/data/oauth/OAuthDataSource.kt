@@ -3,7 +3,11 @@ package edu.uoc.pac4.data.oauth
 import android.util.Log
 import edu.uoc.pac4.data.SessionManager
 import edu.uoc.pac4.data.network.Endpoints
+import edu.uoc.pac4.data.network.UnauthorizedException
+import edu.uoc.pac4.data.user.User
+import edu.uoc.pac4.data.user.UsersResponse
 import io.ktor.client.*
+import io.ktor.client.features.*
 import io.ktor.client.request.*
 
 class OAuthDataSource (
@@ -42,8 +46,38 @@ class OAuthDataSource (
         }
     }
 
+/*
     fun logout() {
         sessionManager.clearAccessToken()
         sessionManager.clearRefreshToken()
     }
+*/
+
+    suspend fun getTokens(authorizationCode: String): OAuthTokensResponse? {
+
+        try {
+            val response = httpClient
+            .post<OAuthTokensResponse>(Endpoints.tokenUrl) {
+                parameter("client_id", OAuthConstants.clientID)
+                parameter("client_secret", OAuthConstants.clientSecret)
+                parameter("code", authorizationCode)
+                parameter("grant_type", "authorization_code")
+                parameter("redirect_uri", OAuthConstants.redirectUri)
+            }
+
+            // Save access token and refresh token using the SessionManager class
+            sessionManager.saveAccessToken(response.accessToken)
+            response.refreshToken?.let { sessionManager.saveRefreshToken(it) }
+
+            return response
+
+        } catch (t: Throwable) {
+        Log.w(TAG, "Error Getting Access token", t)
+        return null
+        }
+    }
+
+
+
+
 }

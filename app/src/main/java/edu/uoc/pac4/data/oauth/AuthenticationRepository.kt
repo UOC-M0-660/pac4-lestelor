@@ -11,6 +11,12 @@ interface AuthenticationRepository {
     /// Returns true if the user logged in successfully. False otherwise
     suspend fun login(authorizationCode: String): Boolean
 
-    suspend fun logout()
+/*    suspend fun logout()*/
+
+
+    // Add the interfaces for OAuthActivity
+    suspend fun getTokens(authorizationCode: String): OAuthTokensResponse?
 
 }
+
+

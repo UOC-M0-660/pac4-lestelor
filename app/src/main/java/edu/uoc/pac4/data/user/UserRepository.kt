@@ -9,4 +9,6 @@ interface UserRepository {
 
     suspend fun updateUser(description: String): User?
 
+    suspend fun logout()
+
 }
