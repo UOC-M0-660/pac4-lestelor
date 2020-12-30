@@ -18,7 +18,4 @@ class TwitchUserRepository(
         return userDataSource.updateUser(description)
     }
 
-    override suspend fun logout() {
-        userDataSource.logout()
-    }
 }

@@ -10,26 +10,27 @@ import edu.uoc.pac4.data.user.UserRepository
 import kotlinx.coroutines.launch
 
 class ProfileViewModel(
-    private val repository: UserRepository,
+    private val repositoryUser: UserRepository,
+    private val repositoryOauth: AuthenticationRepository
 
     ): ViewModel() {
         val user = MutableLiveData<User?>()
 
         fun getUser() {
             viewModelScope.launch {
-                user.postValue(repository.getUser())
+                user.postValue(repositoryUser.getUser())
             }
         }
 
         fun updateUser(description: String) {
             viewModelScope.launch {
-                user.postValue(repository.updateUser(description))
+                user.postValue(repositoryUser.updateUser(description))
             }
         }
 
         fun logout(){
             viewModelScope.launch {
-                repository.logout()
+                repositoryOauth.logout()
             }
         }
     }

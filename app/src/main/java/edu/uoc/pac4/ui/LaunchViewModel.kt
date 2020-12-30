@@ -17,15 +17,20 @@ class LaunchViewModel(
     private val repository: AuthenticationRepository
 ) : ViewModel() {
 
-    // Live Data
-    val isUserAvailable = MutableLiveData<Boolean>()
+/*    // Live Data
+    val isUserAvailable = MutableLiveData<Boolean>()*/
+
+    var isUserAvailable: Boolean? = null
 
 
     // Public function that can be called from the view (Activity)
     fun getUserAvailability() {
         // Get Availability from Repository and post result
-        viewModelScope.launch {
+        // removed the viewmodelscope.launch since sharedpreferences is not an async service
+/*        viewModelScope.launch {
             isUserAvailable.postValue(repository.isUserAvailable())
-        }
+        }*/
+
+        isUserAvailable = repository.isUserAvailable()
     }
 }

@@ -27,9 +27,12 @@ class LaunchActivity : AppCompatActivity() {
         // Connect the Activity with the ViewModel observing any change in livedata isUserAvailable
         // It has to be defined the viewmodel in the uiModule
         viewModel.getUserAvailability()
-        viewModel.isUserAvailable.observe(this, Observer {
+
+        // try of a non async version of isUserAvailable
+        /*viewModel.isUserAvailable.observe(this, Observer {
             checkUserSession(it)
-        })
+        })*/
+        viewModel.isUserAvailable?.let { checkUserSession(it) }
     }
 
     private fun checkUserSession(isUserAvailable:Boolean) {

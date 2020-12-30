@@ -16,8 +16,10 @@ val uiModule = module {
 
     // LaunchViewModel example
     viewModel { LaunchViewModel(repository = get()) }
-    viewModel { StreamsViewModel(repository = get()) }
+    viewModel { StreamsViewModel(repositoryStreams = get(), repositoryOauth = get()) }
     viewModel { OAuthViewModel(repository = get()) }
-    viewModel { ProfileViewModel(repository = get()) }
+
+    // One of the advantages of MVVM is that for an Activity use different repositories easily
+    viewModel { ProfileViewModel(repositoryUser = get(), repositoryOauth = get()) }
 
 }

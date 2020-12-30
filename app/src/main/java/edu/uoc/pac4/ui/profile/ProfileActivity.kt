@@ -29,6 +29,8 @@ import kotlinx.android.synthetic.main.activity_profile.*
 import kotlinx.android.synthetic.main.activity_profile.progressBar
 import kotlinx.coroutines.launch
 import org.koin.android.viewmodel.ext.android.viewModel
+import java.lang.Boolean.FALSE
+import java.lang.Exception
 
 class ProfileActivity : AppCompatActivity() {
 
@@ -59,7 +61,6 @@ class ProfileActivity : AppCompatActivity() {
         logoutButton.setOnClickListener {
             // code for deleting access and refresh token
             viewModel.logout()
-
             // Logout
             logout()
         }
@@ -67,15 +68,19 @@ class ProfileActivity : AppCompatActivity() {
 
     private  fun getUserProfile() {
         progressBar.visibility = VISIBLE
-        viewModel.getUser()
+        try {viewModel.getUser()
+        } catch (t: UnauthorizedException) {
+            onUnauthorized()
+        }
         viewModel.user.observe(this, Observer<User?> {user:User? ->
+            // Hide Loading
+            progressBar.visibility = GONE
             user?.let {
                 // Update the UI with the user data
-                setUserInfo(it)}?:
-                    // Error :(
-                    showError(getString(R.string.error_profile))
-
-
+                setUserInfo(it)
+            }?:
+                // Error :(
+                showError(getString(R.string.error_profile))
         })
         // Before rearranging
 /*        progressBar.visibility = VISIBLE
@@ -100,17 +105,20 @@ class ProfileActivity : AppCompatActivity() {
     private fun updateUserDescription(description: String) {
         progressBar.visibility = VISIBLE
 
-        viewModel.updateUser(description)
+        try {
+            viewModel.updateUser(description)
+        } catch (t: UnauthorizedException) {
+            onUnauthorized()
+        }
         viewModel.user.observe(this, Observer<User?> {user:User? ->
             // Hide Loading
             progressBar.visibility = GONE
             user?.let {
                 // Update the UI with the user data
-                setUserInfo(it)}?:
+                setUserInfo(it)
+            }?:
                     // Error :(
                     showError(getString(R.string.error_profile))
-
-
         })
 
 /*        // Update the Twitch User Description using the API

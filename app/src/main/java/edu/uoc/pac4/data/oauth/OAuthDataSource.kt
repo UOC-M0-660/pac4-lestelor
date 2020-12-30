@@ -46,12 +46,12 @@ class OAuthDataSource (
         }
     }
 
-/*
+
     fun logout() {
         sessionManager.clearAccessToken()
         sessionManager.clearRefreshToken()
     }
-*/
+
 
     suspend fun getTokens(authorizationCode: String): OAuthTokensResponse? {
 
@@ -64,6 +64,9 @@ class OAuthDataSource (
                 parameter("grant_type", "authorization_code")
                 parameter("redirect_uri", OAuthConstants.redirectUri)
             }
+
+            // Remove in the final version, only to check if logout works properly
+            Log.d(TAG,"Oauth tokens: ${response.accessToken} ${response.refreshToken}")
 
             // Save access token and refresh token using the SessionManager class
             sessionManager.saveAccessToken(response.accessToken)

@@ -69,12 +69,4 @@ class UserDataSource (
         }
     }
 
-
-    fun logout() {
-        sessionManager.clearAccessToken()
-        sessionManager.clearRefreshToken()
-    }
-
-
-
 }
