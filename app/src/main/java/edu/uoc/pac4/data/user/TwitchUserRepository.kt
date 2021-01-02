@@ -1,7 +1,5 @@
 package edu.uoc.pac4.data.user
 
-import edu.uoc.pac4.data.streams.StreamsDataSource
-
 /**
  * Created by alex on 11/21/20.
  */

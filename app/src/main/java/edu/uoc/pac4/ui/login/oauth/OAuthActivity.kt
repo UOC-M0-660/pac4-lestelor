@@ -1,8 +1,8 @@
 package edu.uoc.pac4.ui.login.oauth
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.net.Uri
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -10,18 +10,12 @@ import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.Toast
-import androidx.lifecycle.Observer
-import androidx.lifecycle.lifecycleScope
-import edu.uoc.pac4.ui.LaunchActivity
+import androidx.appcompat.app.AppCompatActivity
 import edu.uoc.pac4.R
-import edu.uoc.pac4.data.SessionManager
 import edu.uoc.pac4.data.network.Endpoints
-import edu.uoc.pac4.data.network.Network
 import edu.uoc.pac4.data.oauth.OAuthConstants
-import edu.uoc.pac4.data.oauth.OAuthTokensResponse
-import edu.uoc.pac4.ui.streams.StreamsViewModel
+import edu.uoc.pac4.ui.LaunchActivity
 import kotlinx.android.synthetic.main.activity_oauth.*
-import kotlinx.coroutines.launch
 import org.koin.android.viewmodel.ext.android.viewModel
 
 class OAuthActivity : AppCompatActivity() {
@@ -36,7 +30,7 @@ class OAuthActivity : AppCompatActivity() {
         launchOAuthAuthorization()
     }
 
-    fun buildOAuthUri(): Uri {
+    private fun buildOAuthUri(): Uri {
         return Uri.parse(Endpoints.authorizationUrl)
             .buildUpon()
             .appendQueryParameter("client_id", OAuthConstants.clientID)
@@ -47,6 +41,7 @@ class OAuthActivity : AppCompatActivity() {
             .build()
     }
 
+    @SuppressLint("SetJavaScriptEnabled")
     private fun launchOAuthAuthorization() {
         //  Create URI
         val uri = buildOAuthUri()
@@ -98,7 +93,7 @@ class OAuthActivity : AppCompatActivity() {
         progressBar.visibility = View.VISIBLE
 
         viewModel.getTokens(authorizationCode)
-        viewModel.tokensResponse.observe(this, Observer<OAuthTokensResponse?> {
+        viewModel.tokensResponse.observe(this, {
             if (it!=null) {
                 progressBar.visibility = View.GONE
                 // Restart app to navigate to StreamsActivity

@@ -1,20 +1,11 @@
 package edu.uoc.pac4.data.streams
 
-import android.content.Intent
 import android.util.Log
-import android.widget.Toast
-import androidx.lifecycle.lifecycleScope
-import edu.uoc.pac4.R
-import edu.uoc.pac4.data.SessionManager
 import edu.uoc.pac4.data.network.Endpoints
-import edu.uoc.pac4.data.network.Network
 import edu.uoc.pac4.data.network.UnauthorizedException
-import edu.uoc.pac4.ui.login.LoginActivity
 import io.ktor.client.*
 import io.ktor.client.features.*
 import io.ktor.client.request.*
-import kotlinx.android.synthetic.main.activity_streams.*
-import kotlinx.coroutines.launch
 
 class StreamsDataSource (private val httpClient: HttpClient) {
 

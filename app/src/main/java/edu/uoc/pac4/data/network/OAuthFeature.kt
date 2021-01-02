@@ -35,7 +35,7 @@ class OAuthFeature(
             return OAuthFeature(config.getToken, config.refreshToken)
         }
 
-        private val RefreshKey = "Ktor-OAuth-Refresh"
+        private const val RefreshKey = "Ktor-OAuth-Refresh"
 
         override fun install(feature: OAuthFeature, scope: HttpClient) {
             scope.requestPipeline.intercept(HttpRequestPipeline.State) {

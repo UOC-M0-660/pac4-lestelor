@@ -2,35 +2,23 @@ package edu.uoc.pac4.ui.profile
 
 import android.content.Context
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.MenuItem
-import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
-import androidx.lifecycle.Observer
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CircleCrop
 import edu.uoc.pac4.R
-import edu.uoc.pac4.data.network.Network
-import edu.uoc.pac4.ui.login.LoginActivity
-import edu.uoc.pac4.data.SessionManager
 import edu.uoc.pac4.data.network.UnauthorizedException
-import edu.uoc.pac4.data.oauth.OAuthTokensResponse
 import edu.uoc.pac4.data.user.User
-import edu.uoc.pac4.ui.LaunchActivity
-import edu.uoc.pac4.ui.login.oauth.OAuthActivity
-import edu.uoc.pac4.ui.login.oauth.OAuthViewModel
-import kotlinx.android.synthetic.main.activity_oauth.*
+import edu.uoc.pac4.ui.login.LoginActivity
 import kotlinx.android.synthetic.main.activity_profile.*
-import kotlinx.android.synthetic.main.activity_profile.progressBar
 import kotlinx.coroutines.launch
 import org.koin.android.viewmodel.ext.android.viewModel
-import java.lang.Boolean.FALSE
-import java.lang.Exception
 
 class ProfileActivity : AppCompatActivity() {
 
@@ -72,7 +60,7 @@ class ProfileActivity : AppCompatActivity() {
         } catch (t: UnauthorizedException) {
             onUnauthorized()
         }
-        viewModel.user.observe(this, Observer<User?> {user:User? ->
+        viewModel.user.observe(this, { user:User? ->
             // Hide Loading
             progressBar.visibility = GONE
             user?.let {
@@ -110,7 +98,7 @@ class ProfileActivity : AppCompatActivity() {
         } catch (t: UnauthorizedException) {
             onUnauthorized()
         }
-        viewModel.user.observe(this, Observer<User?> {user:User? ->
+        viewModel.user.observe(this, { user:User? ->
             // Hide Loading
             progressBar.visibility = GONE
             user?.let {

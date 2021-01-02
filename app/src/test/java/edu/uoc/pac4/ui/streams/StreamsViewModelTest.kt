@@ -1,13 +1,11 @@
 package edu.uoc.pac4.ui.streams
 
-import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.LifecycleOwner
 import edu.uoc.pac4.data.oauth.AuthenticationRepository
-import edu.uoc.pac4.data.streams.Stream
 import edu.uoc.pac4.data.streams.StreamsRepository
-import org.junit.Test
-
-import org.junit.Assert.*
+import org.junit.Assert.assertEquals
 import org.junit.Before
+import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
 import org.mockito.junit.MockitoJUnitRunner
@@ -18,21 +16,26 @@ class StreamsViewModelTest {
 
     private lateinit var streamsViewModel: StreamsViewModel
 
+
     @Mock
     lateinit var repositoryStreams: StreamsRepository
+    @Mock
     lateinit var repositoryOauth: AuthenticationRepository
-    lateinit var streams: MutableLiveData<Pair<String?,List<Stream>>>
+    @Mock
+    private lateinit var lifecycleOwner: LifecycleOwner
+
 
     @Before
     fun setup() {
         streamsViewModel = StreamsViewModel(repositoryStreams, repositoryOauth)
         streamsViewModel.getStreams(null)
-        streams = streamsViewModel.streams
     }
 
     @Test
+
      fun getStreams() {
-        streamsViewModel.getStreams(null)
-        assertEquals(streams, streamsViewModel.streams)
+        streamsViewModel.streams.observe(lifecycleOwner, {
+            assertEquals(it, streamsViewModel.streams)
+        })
     }
 }

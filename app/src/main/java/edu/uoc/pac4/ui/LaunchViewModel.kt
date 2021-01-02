@@ -1,10 +1,7 @@
 package edu.uoc.pac4.ui
 
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import edu.uoc.pac4.data.oauth.AuthenticationRepository
-import kotlinx.coroutines.launch
 
 /**
  * Created by alex on 11/21/20.
