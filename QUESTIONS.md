@@ -5,15 +5,16 @@
 #### MVVM
 
 ##### ¿En qué consiste esta arquitectura?
-MVVM son las siglas de Model-View-ViewModel. MVVM es un patrón arquitectónico cuyo propósito principal es lograr la separación de preocupaciones a través de una clara distinción entre los roles de cada una de sus capas:
-- View muestra la interfaz de usuario e informa a las otras capas sobre las acciones del usuario, usualmente mediante una Activity o Fragment. Esto facilita que la vista se comunique con más de un modelo.
-- ViewModel  recupera la información necesaria o expone información a la View. La clase ViewModel está especialmente diseñada para administrar y almacenar información durante su propio ciclo de vida, es decir, puede sobrevivir a cambios de configuración / ciclo de vida como rotaciones de pantalla
-- Model o DataModel que recupera información de su fuente de datos y la expone a los ViewModels. También debe recibir cualquier evento del ViewModel que necesite para crear, leer, actualizar o eliminar cualquier dato necesario del backend.
+MVVM son las siglas de Model-View-ViewModel. MVVM es una arquitectura de programación cuyo propósito principal es lograr la separación de problemas a través de una clara distinción entre los roles de cada una de sus capas que la conforman:
+- View muestra la interfaz de usuario e informa a las otras capas sobre las acciones del usuario. Usualmente se trata de una Activity o Fragment. Esto facilita que la vista se comunique con más de un modelo.
+- ViewModel  recupera la información necesaria de la base de datos DataModel o expone información a la View. La clase ViewModel está especialmente diseñada para administrar y almacenar información durante su propio ciclo de vida, es decir, puede sobrevivir a cambios de configuración / ciclo de vida de la activity/fragment como rotaciones de pantalla
+- Model o DataModel que recupera información de su fuente de datos y la expone a los ViewModels. También debe recibir cualquier evento del ViewModel que necesite para crear, leer, actualizar o eliminar cualquier registro del backend.
 
 ##### ¿Cuáles son sus ventajas?
-- Al limitar toda la manipulación de datos al ViewModel y al mantenerlo libre de cualquier código de View, es posible ejecutar unit test al no requerir el tiempo de ejecución de Android.
-- MVVM separa las tareas, simplificando así el controlador de las tareas.
-- Al es estar completamente separado de las Vistas, se reduce el riesgo de tener demasiado código en las otras capas.
+- Es posible ejecutar unit test al limitar toda la manipulación de datos al ViewModel y al mantenerlo libre de cualquier código de UI de la View.
+- MVVM separa las tareas, simplificando así su correcta gestión.
+- Al es estar completamente separado de las Views, se reduce el riesgo de tener demasiado código en las otras capas.
+- Se controla mejor el ciclo de vida de las ViewModel, al separarlo de las activity/fragment y se previenen leaks de memoria de otras clases que hagan referencia al ViewModel
 
 ##### ¿Qué inconvenientes tiene?
 - MVVM puede ser demasiado complejo para aplicaciones con una interfaz de usuario simple
@@ -21,24 +22,38 @@ MVVM son las siglas de Model-View-ViewModel. MVVM es un patrón arquitectónico 
 #### MVP
 
 ##### ¿En qué consiste esta arquitectura?
-Escribe tu respuesta aquí
+MVP que significa Model ViewPresenter, y se compone de las siguientes partes:
+- Model o el modelo es la capa de datos, responsable de la parte programática: recuperar los datos, almacenar los datos o modificarlos.
+- View que muestra la interfaz de usuario; suele ser una activity (o fragment): oculta y muestra vistas, manej la navegación a otras activities a través de Intents y escucha las interacciones del sistema operativo y la entrada del usuario.
+- Presenter que habla con Model y View y controla la lógica de cómo se presentan los datos. El trabajo del presentador es realizar cualquier mapeo o formateo adicional de los datos antes de entregarlo a la View para mostrarlo. Mientras que la View extiende la Activity o Fragmen, el Model y el Presenter no extienden las clases específicas del framework de Android. En otras palabras, no deben contener referencias al paquete com.android. * en el Model o Presenter.
 
 ##### ¿Cuáles son sus ventajas?
-Escribe tu respuesta aquí
+Al dividir una actividad en clases separadas de model, View y Presenter con interfaces, es posible separar los problemas en partes más delimitadas, como en el caso de MVVM.
+Los Models y Presenters son testables por Unit Test.
 
 ##### ¿Qué inconvenientes tiene?
-Escribe aquí tu respuesta
+Navegar a través de interfaces, lo que puede resultar confuso al principio. En Android Studio, CMD + OPCIÓN + B en Mac o CTRL + ALT + B en PC es el método abreviado de teclado para encontrar el camino a las implementaciones reales de métodos de interfaz.
+A diferencia de MVVP, cuando el sistema operativo destruye la Actividad, debe asegurarse de que su Presenter destruya las AsyncTasks o de lo contrario causará problemas cuando la tarea se complete y la Actividad ya no esté allí.
+Si alguna clase hace referencia al Presenter es posible que haya un leak de memoria cuando se destruya la activity.  puede intentar guardar algún estado a través de onSaveInstanceState o utilizar loaders, que sobreviven a los cambios de configuración.
 
 #### MVI
 
 ##### ¿En qué consiste esta arquitectura?
-Escribe tu respuesta aquí
+MVI son las siglas de Model-View-Intent, una reciente arquitectura para Android inspirada en la naturaleza unidireccional y cíclica del marco Cycle.js., programación reactiva en el que reacciona a un cambio, como el valor de una variable o el clic de un botón en su interfaz de usuario. Cuando la app reacciona a este cambio, entra en un nuevo estado. El nuevo estado generalmente, pero no siempre, se representa como un cambio de interfaz de usuario con algo como una barra de progreso, una nueva lista de películas o una pantalla completamente diferente.
+MVI es muy diferente a MVP o MVVM. El papel de cada uno de sus componentes es el siguiente:
+- Model: acceden al backend pero, a diferencia de MVP o MVVM también representa un estado que deben ser inmutables para garantizar un flujo de datos unidireccional entre ellos y las otras capas de su arquitectura.
+- Intent: Deseo de realizar una acción por parte del usuario. Por cada acción del usuario, la View recibirá un Intent, que será observada por el Presenter y traducida a un nuevo estado en sus Models.
+Los intents en MVI no representan la clase android.content.Intent habitual que se usa para cosas como comenzar una nueva clase. Las intenciones en MVI representan una acción a realizar que se traduce en un cambio de estado en su aplicación.
+- View: al igual que en MVP, están representadas por interfaces, que luego será implementado en una o más Actividades o Fragmentos.
 
 ##### ¿Cuáles son sus ventajas?
-Escribe tu respuesta aquí
+
+- Un flujo de datos unidireccional y cíclico para su aplicación.
+- Estado único: las estructuras de datos inmutables son muy fáciles de manejar al asegurar que solo habrá un estado único entre todas las capas de su aplicación.
+- Modelos inmutables que proporcionan un comportamiento confiable y seguridad de subprocesos en aplicaciones grandes: esto es especialmente útil al trabajar con aplicaciones reactivas que hacen uso de bibliotecas como RxJava o LiveData. Dado que ningún método puede modificar los Models, siempre deberán ser recreados y guardados en un solo lugar, con esto se asegura de que no habrá otros efectos secundarios como diferentes objetos modificando tus Modelos desde diferentes threads.
 
 ##### ¿Qué inconvenientes tiene?
-Escribe aquí tu respuesta
+- La curva de aprendizaje es un poco más alta, ya que necesita tener una cantidad decente de conocimiento de otros temas intermedios / avanzados como la programación reactiva, multi-threading y RxJava.
 
 ---
 
@@ -101,7 +116,7 @@ De esta manera es posible que, por ejemplo, la clase MovieTheater tenga dos depe
 
 ### Lint
 
-5 errores:
+5 errores encontrados para los que se ha dado solución:
 - Unused import directive inspection
 Causa: Esta inspección informa las declaraciones de importación en código Kotlin que no se utilizan.
 Solución: Optimize imports
