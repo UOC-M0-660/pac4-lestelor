@@ -14,8 +14,6 @@ class StreamsDataSource (private val httpClient: HttpClient) {
     @Throws(UnauthorizedException::class)
     suspend fun getStreams(cursor: String? = null): Pair<String?, List<Stream>> {
         Log.d(TAG, "Requesting streams with cursor $cursor")
-
-
         try {
             val response = httpClient
                     .get<StreamsResponse>(Endpoints.streamsUrl) {

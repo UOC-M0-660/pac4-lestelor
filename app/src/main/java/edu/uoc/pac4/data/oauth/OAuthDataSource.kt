@@ -42,15 +42,12 @@ class OAuthDataSource (
         }
     }
 
-
     fun logout() {
         sessionManager.clearAccessToken()
         sessionManager.clearRefreshToken()
     }
 
-
     suspend fun getTokens(authorizationCode: String): OAuthTokensResponse? {
-
         try {
             val response = httpClient
             .post<OAuthTokensResponse>(Endpoints.tokenUrl) {
@@ -75,8 +72,5 @@ class OAuthDataSource (
         return null
         }
     }
-
-
-
-
+    
 }
