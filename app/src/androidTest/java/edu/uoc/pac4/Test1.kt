@@ -1,6 +1,7 @@
 package edu.uoc.pac3
 
 import android.content.Context
+import android.util.Log
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -29,6 +30,7 @@ import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import java.lang.Exception
 
 
 /**
@@ -39,7 +41,7 @@ import org.junit.runner.RunWith
 
 
 @LargeTest
-class Ex1Test: TwitchTest()  {
+class Ex1Test  {
 
     private lateinit var streamsViewModel: StreamsViewModel
     private lateinit var profileViewModel: ProfileViewModel
@@ -73,7 +75,7 @@ class Ex1Test: TwitchTest()  {
     fun getStreamsValidAccessToken() {
         val context: Context = ApplicationProvider.getApplicationContext()
         runBlocking {
-            setAccessToken(context, "efwo35z4mgyiyhje8bbp73b98oyavf")
+            setAccessToken(context, "efwo35z4mgyiyhje8bbp73b98oyavf", "7fl44yqjm5tjdx73z45dd9ybwuuiez")
         }
         val scenario = ActivityScenario.launch(StreamsActivity::class.java)
         scenario.onActivity {
@@ -91,11 +93,16 @@ class Ex1Test: TwitchTest()  {
     // Invalid client_id returns invalid token
     @Test
     fun getStreamsInvalidAccessToken() {
+
         val context: Context = ApplicationProvider.getApplicationContext()
         runBlocking {
-            setAccessToken(context, "1234")
+            try {
+                setAccessToken(context, "efwo35z4mgyiyhje8bbp73b98oyavf", "1234")
+                assert(SessionManager(context).getAccessToken().isNullOrEmpty())
+            } catch (e:Exception) {
+                assert(true)
+            }
         }
-        assert(SessionManager(context).getAccessToken().isNullOrEmpty())
     }
 
     // Check logout clears access token
@@ -103,7 +110,7 @@ class Ex1Test: TwitchTest()  {
     fun logout() {
         val context: Context = ApplicationProvider.getApplicationContext()
         runBlocking {
-            setAccessToken(context, "efwo35z4mgyiyhje8bbp73b98oyavf")
+            setAccessToken(context, "efwo35z4mgyiyhje8bbp73b98oyavf", "7fl44yqjm5tjdx73z45dd9ybwuuiez")
             profileViewModel.logout()
             delay(sharedPrefsWaitingMillis)
             assert(SessionManager(context).getAccessToken().isNullOrEmpty())
@@ -111,11 +118,11 @@ class Ex1Test: TwitchTest()  {
     }
 
     // Token Refresh
-    suspend fun setAccessToken(context: Context, client_id: String) {
+    suspend fun setAccessToken(context: Context, client_id: String, client_secret:String) {
         val response =
                 httpClient.post<OAuthTokensResponse>(Endpoints.tokenUrl) {
                     parameter("client_id", client_id)
-                    parameter("client_secret", "7fl44yqjm5tjdx73z45dd9ybwuuiez")
+                    parameter("client_secret", client_secret)
                     parameter("refresh_token", refreshToken)
                     parameter("grant_type", "refresh_token")
                 }
